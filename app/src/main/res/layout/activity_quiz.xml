@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:textStyle="bold"
         android:textColor="@android:color/holo_blue_light"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,11 +23,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:textStyle="bold"
         android:textColor="@android:color/holo_green_light"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="0:00" />
+
+    <Button
+        android:id="@+id/btStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/bt_start"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/tvOption1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvScore" />
 
     <TextView
         android:id="@+id/tvQuestion"
@@ -35,6 +48,7 @@
         android:gravity="center"
         android:textSize="32sp"
         android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tvOption1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
