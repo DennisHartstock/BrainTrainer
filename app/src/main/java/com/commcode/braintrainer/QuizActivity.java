@@ -9,6 +9,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class QuizActivity extends AppCompatActivity {
 
     private TextView tvScore;
@@ -20,6 +23,9 @@ public class QuizActivity extends AppCompatActivity {
     private TextView tvOption3;
     private TextView tvOption4;
 
+    private final ArrayList<TextView> answers = new ArrayList<>();
+    private int rightAnswer;
+    private int rightAnswerPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,17 +33,54 @@ public class QuizActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz);
         initViews();
 
+        answers.add(tvOption1);
+        answers.add(tvOption2);
+        answers.add(tvOption3);
+        answers.add(tvOption4);
+
         btStart.setOnClickListener(view -> {
             btStart.setVisibility(View.GONE);
             tvQuestion.setVisibility(View.VISIBLE);
             setTimer(60);
+            viewNextQuestion();
         });
 
+        tvOption1.setOnClickListener(view -> viewNextQuestion());
+        tvOption2.setOnClickListener(view -> viewNextQuestion());
+        tvOption3.setOnClickListener(view -> viewNextQuestion());
+        tvOption4.setOnClickListener(view -> viewNextQuestion());
+    }
 
-        int a = 0;
-        int b = 0;
+    private void viewNextQuestion() {
+        generateQuestion();
+        setAnswers();
+    }
+
+    private void setAnswers() {
+        rightAnswerPosition = new Random().nextInt(4);
+        for (int i = 0; i < answers.size(); i++) {
+            if (i == rightAnswerPosition) {
+                answers.get(i).setText(String.format("%s", rightAnswer));
+            } else {
+                answers.get(i).setText(String.format("%s", generateAnswers()));
+            }
+        }
+    }
+
+    private int generateAnswers() {
+        int answer;
+        do {
+            answer = new Random().nextInt(20) + 1;
+        } while (answer == rightAnswer);
+        return answer;
+    }
+
+    private void generateQuestion() {
+        int a = new Random().nextInt(10) + 1;
+        int b = new Random().nextInt(10) + 1;
         String question = String.format("%s + %s = ", a, b);
         tvQuestion.setText(question);
+        rightAnswer = a + b;
     }
 
     public void setTimer(int seconds) {
