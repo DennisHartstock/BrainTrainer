@@ -45,10 +45,34 @@ public class QuizActivity extends AppCompatActivity {
             viewNextQuestion();
         });
 
-        tvOption1.setOnClickListener(view -> viewNextQuestion());
-        tvOption2.setOnClickListener(view -> viewNextQuestion());
-        tvOption3.setOnClickListener(view -> viewNextQuestion());
-        tvOption4.setOnClickListener(view -> viewNextQuestion());
+        tvOption1.setOnClickListener(view -> {
+            checkAnswer(view);
+            viewNextQuestion();
+        });
+        tvOption2.setOnClickListener(view -> {
+            checkAnswer(view);
+            viewNextQuestion();
+        });
+        tvOption3.setOnClickListener(view -> {
+            checkAnswer(view);
+            viewNextQuestion();
+        });
+        tvOption4.setOnClickListener(view -> {
+            checkAnswer(view);
+            viewNextQuestion();
+        });
+    }
+
+    private void checkAnswer(View view) {
+        TextView textView = (TextView) view;
+        String answer = textView.getText().toString();
+        int chosenAnswer = Integer.parseInt(answer);
+
+        if (chosenAnswer == rightAnswer) {
+            Toast.makeText(this, "Right", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void viewNextQuestion() {
