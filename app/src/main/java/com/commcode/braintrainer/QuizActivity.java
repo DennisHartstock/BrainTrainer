@@ -27,6 +27,9 @@ public class QuizActivity extends AppCompatActivity {
     private int rightAnswer;
     private int rightAnswerPosition;
 
+    private int countOfQuestions = 0;
+    private int countOfRightAnswers = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,10 +72,12 @@ public class QuizActivity extends AppCompatActivity {
         int chosenAnswer = Integer.parseInt(answer);
 
         if (chosenAnswer == rightAnswer) {
+            countOfRightAnswers++;
             Toast.makeText(this, "Right", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
         }
+        countOfQuestions++;
     }
 
     private void viewNextQuestion() {
@@ -105,6 +110,8 @@ public class QuizActivity extends AppCompatActivity {
         String question = String.format("%s + %s = ", a, b);
         tvQuestion.setText(question);
         rightAnswer = a + b;
+
+        tvScore.setText(String.format("%s / %s", countOfRightAnswers, countOfQuestions));
     }
 
     public void setTimer(int seconds) {
