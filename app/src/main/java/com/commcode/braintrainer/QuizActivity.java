@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 public class QuizActivity extends AppCompatActivity {
@@ -23,12 +24,16 @@ public class QuizActivity extends AppCompatActivity {
     private TextView tvOption3;
     private TextView tvOption4;
 
+    private int seconds = 60;
+
     private final ArrayList<TextView> answers = new ArrayList<>();
     private int rightAnswer;
     private int rightAnswerPosition;
 
     private int countOfQuestions = 0;
     private int countOfRightAnswers = 0;
+
+    private boolean isGameOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,7 @@ public class QuizActivity extends AppCompatActivity {
         btStart.setOnClickListener(view -> {
             btStart.setVisibility(View.GONE);
             tvQuestion.setVisibility(View.VISIBLE);
-            setTimer(60);
+            setTimer();
             viewNextQuestion();
         });
 
@@ -71,18 +76,22 @@ public class QuizActivity extends AppCompatActivity {
         String answer = textView.getText().toString();
         int chosenAnswer = Integer.parseInt(answer);
 
-        if (chosenAnswer == rightAnswer) {
-            countOfRightAnswers++;
-            Toast.makeText(this, "Right", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
+        if (!isGameOver) {
+            if (chosenAnswer == rightAnswer) {
+                countOfRightAnswers++;
+                Toast.makeText(this, "Right", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Wrong", Toast.LENGTH_SHORT).show();
+            }
+            countOfQuestions++;
         }
-        countOfQuestions++;
     }
 
     private void viewNextQuestion() {
-        generateQuestion();
-        setAnswers();
+        if (!isGameOver) {
+            generateQuestion();
+            setAnswers();
+        }
     }
 
     private void setAnswers() {
@@ -114,17 +123,25 @@ public class QuizActivity extends AppCompatActivity {
         tvScore.setText(String.format("%s / %s", countOfRightAnswers, countOfQuestions));
     }
 
-    public void setTimer(int seconds) {
+    private String getTime(long millis) {
+        int seconds = (int) (millis / 1_000);
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+        return String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+    }
+
+    public void setTimer() {
         CountDownTimer countDownTimer = new CountDownTimer(seconds * 1000L, 1_000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                tvTimer.setText(String.format("%s", (millisUntilFinished / 1000)));
+                tvTimer.setText(getTime(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
                 Toast.makeText(QuizActivity.this, "Time is over", Toast.LENGTH_SHORT).show();
+                isGameOver = true;
             }
         }.start();
     }
