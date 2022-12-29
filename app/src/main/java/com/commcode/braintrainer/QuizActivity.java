@@ -1,7 +1,11 @@
 package com.commcode.braintrainer;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -24,7 +28,7 @@ public class QuizActivity extends AppCompatActivity {
     private TextView tvOption3;
     private TextView tvOption4;
 
-    private int seconds = 60;
+    private final int seconds = 60;
 
     private final ArrayList<TextView> answers = new ArrayList<>();
     private int rightAnswer;
@@ -69,6 +73,10 @@ public class QuizActivity extends AppCompatActivity {
             checkAnswer(view);
             viewNextQuestion();
         });
+    }
+
+    public static Intent newIntent(Context context) {
+        return new Intent(context, QuizActivity.class);
     }
 
     private void checkAnswer(View view) {
@@ -136,18 +144,33 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 tvTimer.setText(getTime(millisUntilFinished));
+
+                if (millisUntilFinished < 10_000) {
+                    tvTimer.setTextColor(getResources().getColor(android.R.color.holo_red_light));
+                }
             }
 
             @Override
             public void onFinish() {
                 Toast.makeText(QuizActivity.this, "Time is over", Toast.LENGTH_SHORT).show();
                 isGameOver = true;
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                int score = preferences.getInt("score", 0);
+
+                if (countOfRightAnswers > score) {
+                    preferences.edit().putInt("score", countOfRightAnswers).apply();
+                }
+
+                Intent intent = new Intent(QuizActivity.this, ScoreActivity.class);
+                intent.putExtra("result", countOfRightAnswers);
+                startActivity(intent);
             }
         }.start();
     }
 
     private void initViews() {
-        tvScore = findViewById(R.id.tvScore);
+        tvScore = findViewById(R.id.tvResult);
         tvTimer = findViewById(R.id.tvTimer);
         btStart = findViewById(R.id.btStart);
         tvQuestion = findViewById(R.id.tvQuestion);
